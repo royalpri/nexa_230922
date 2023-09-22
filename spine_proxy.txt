@@ -1,0 +1,118 @@
+[SPINE01]
+
+enable
+config terminal
+
+hostname spine01
+
+interface Loopback0
+ ip address 175.254.1.1 255.255.255.255
+
+interface Loopback1
+ ip address 10.10.10.10 255.255.255.255
+         
+interface Ethernet0/0
+ ip address 1.1.1.2 255.255.255.252
+ ip router isis 9964
+ isis circuit-type level-1
+ isis network point-to-point 
+ isis metric 10 level-1
+ no shutdown
+
+
+router isis 9964
+ net 49.5610.1752.5400.1001.00
+ is-type level-1
+ metric-style wide
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Loopback0
+
+
+end
+copy run star
+
+
+
+
+          
+[SPINE02]
+enable
+config terminal
+
+hostname spine02
+
+interface Loopback0
+ ip address 175.254.1.2 255.255.255.255
+
+interface Loopback1
+ ip address 10.10.10.10 255.255.255.255
+         
+
+interface Ethernet0/1
+ ip address 2.2.2.2 255.255.255.252
+ ip router isis 9964
+ isis circuit-type level-1
+ isis network point-to-point 
+ isis metric 10 level-1
+ no shutdown
+
+router isis 9964
+ net 49.5610.1752.5400.1002.00
+ is-type level-1
+ metric-style wide
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface Ethernet0/1
+ no passive-interface Loopback0
+
+
+
+end
+copy run star
+    
+[LEAF01]
+
+enable
+config terminal
+
+hostname leaf01
+
+interface Loopback0
+ ip address 175.254.1.175 255.255.255.255
+
+interface Ethernet0/0
+ ip address 1.1.1.1 255.255.255.252
+ ip router isis 9964
+ ip load-sharing per-packet
+ isis circuit-type level-1
+ isis network point-to-point 
+ isis metric 10 level-1
+ no shutdown
+
+interface Ethernet0/1
+ ip address 2.2.2.1 255.255.255.252
+ ip router isis 9964
+ ip load-sharing per-packet
+ isis circuit-type level-1
+ isis network point-to-point 
+ isis metric 10 level-1
+ no shutdown
+
+
+router isis 9964
+ net 49.5610.1752.5400.1175.00
+ is-type level-1
+ metric-style wide
+ log-adjacency-changes
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Loopback0
+ maximum-paths 32
+
+
+end
+copy run star
+           
